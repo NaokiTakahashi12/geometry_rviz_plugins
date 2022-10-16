@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<library path="geometry_rviz_plugins">
+  <class name="geometry_rviz_plugins/Vector3Stamped" type="geometry_rviz_plugins::displays::Vector3StampedDisplay" base_class_type="rviz_common::Display">
+    <description>
+      Display data from a geometry_msgs::msg::Vector3Stamped message as vector.
+    </description>
+    <message_type>
+      geometry_msgs/msg/Vector3Stamped
+    </message_type>
+  </class>
+</library>
