@@ -8,4 +8,12 @@
       geometry_msgs/msg/Vector3Stamped
     </message_type>
   </class>
+  <class name="geometry_rviz_plugins/TwistStamped" type="geometry_rviz_plugins::displays::TwistStampedDisplay" base_class_type="rviz_common::Display">
+    <description>
+      Display data from a geometry_msgs::msg::TwistStamped message as vector.
+    </description>
+    <message_type>
+      geometry_msgs/msg/TwistStamped
+    </message_type>
+  </class>
 </library>

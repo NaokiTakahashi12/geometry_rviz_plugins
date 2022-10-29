@@ -19,6 +19,7 @@ ament_auto_find_build_dependencies()
 
 qt5_wrap_cpp(geometry_rviz_plugins_moc_files
     ${CMAKE_CURRENT_SOURCE_DIR}/include/geometry_rviz_plugins/displays/vector3_stamped.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/geometry_rviz_plugins/displays/twist_stamped.hpp
 )
 
 add_library(geometry_rviz_plugins SHARED)
@@ -27,6 +28,7 @@ target_sources(geometry_rviz_plugins
     PRIVATE
         ${geometry_rviz_plugins_moc_files}
         src/displays/vector3_stamped.cpp
+        src/displays/twist_stamped.cpp
 )
 target_include_directories(geometry_rviz_plugins
     PUBLIC
@@ -54,6 +56,7 @@ ament_target_dependencies(geometry_rviz_plugins
 )
 
 ament_export_include_directories("include/${PROJECT_NAME}")
+
 pluginlib_export_plugin_description_file(rviz_common
     rviz_plugins_descriptions.xml
 )
