@@ -55,7 +55,6 @@ namespace geometry_rviz_plugins::displays
             void initializeRvizArrow();
 
             void destroyRenderingObjects();
-            void destroyProperties();
     };
 }
 

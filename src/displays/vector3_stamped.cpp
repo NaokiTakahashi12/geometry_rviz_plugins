@@ -105,7 +105,6 @@ namespace geometry_rviz_plugins::displays
     Vector3StampedDisplay::~Vector3StampedDisplay()
     {
         destroyRenderingObjects();
-        destroyProperties();
     }
 
     void Vector3StampedDisplay::reset()
@@ -199,13 +198,6 @@ namespace geometry_rviz_plugins::displays
     void Vector3StampedDisplay::destroyRenderingObjects()
     {
         rviz_arrow_.reset();
-    }
-
-    void Vector3StampedDisplay::destroyProperties()
-    {
-        shaft_radius_property_.reset();
-        head_radius_property_.reset();
-        head_scale_property_.reset();
     }
 }
 
