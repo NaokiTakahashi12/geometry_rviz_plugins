@@ -80,7 +80,7 @@ namespace geometry_rviz_plugins::displays
         head_scale_property_->setMin(0);
         head_scale_property_->setMax(1);
 
-        position_offsed_property_.reset
+        position_offset_property_.reset
         (
             new rviz_common::properties::VectorProperty
             (
@@ -122,6 +122,8 @@ namespace geometry_rviz_plugins::displays
                     head_radius = head_radius_property_->getFloat(),
                     head_scale = head_scale_property_->getFloat();
 
+        const Ogre::Vector3 offset_vector = position_offset_property_->getVector();
+
         Ogre::Vector3 position;
         Ogre::Quaternion quaternion;
 
@@ -133,6 +135,10 @@ namespace geometry_rviz_plugins::displays
             return;
         }
         this->setTransformOk();
+
+        position.x += offset_vector.x;
+        position.y += offset_vector.y;
+        position.z += offset_vector.z;
 
         const float vector_norm = std::sqrt
         (

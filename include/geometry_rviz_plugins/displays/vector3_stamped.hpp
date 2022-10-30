@@ -48,7 +48,7 @@ namespace geometry_rviz_plugins::displays
                                                                     head_radius_property_,
                                                                     head_scale_property_;
 
-            std::unique_ptr<rviz_common::properties::VectorProperty> position_offsed_property_;
+            std::unique_ptr<rviz_common::properties::VectorProperty> position_offset_property_;
 
             std::unique_ptr<rviz_rendering::Arrow> rviz_arrow_;
 
