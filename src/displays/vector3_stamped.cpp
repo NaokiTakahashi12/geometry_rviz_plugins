@@ -52,7 +52,6 @@ namespace geometry_rviz_plugins::displays
             )
         );
         shaft_radius_property_->setMin(0);
-        shaft_radius_property_->setMax(1);
 
         head_radius_property_.reset
         (
@@ -65,7 +64,6 @@ namespace geometry_rviz_plugins::displays
             )
         );
         head_radius_property_->setMin(0);
-        head_radius_property_->setMax(1);
 
         head_scale_property_.reset
         (
@@ -80,7 +78,7 @@ namespace geometry_rviz_plugins::displays
         head_scale_property_->setMin(0);
         head_scale_property_->setMax(1);
 
-        position_offsed_property_.reset
+        position_offset_property_.reset
         (
             new rviz_common::properties::VectorProperty
             (
@@ -105,7 +103,6 @@ namespace geometry_rviz_plugins::displays
     Vector3StampedDisplay::~Vector3StampedDisplay()
     {
         destroyRenderingObjects();
-        destroyProperties();
     }
 
     void Vector3StampedDisplay::reset()
@@ -123,6 +120,8 @@ namespace geometry_rviz_plugins::displays
                     head_radius = head_radius_property_->getFloat(),
                     head_scale = head_scale_property_->getFloat();
 
+        const Ogre::Vector3 offset_vector = position_offset_property_->getVector();
+
         Ogre::Vector3 position;
         Ogre::Quaternion quaternion;
 
@@ -135,6 +134,10 @@ namespace geometry_rviz_plugins::displays
         }
         this->setTransformOk();
 
+        position.x += offset_vector.x;
+        position.y += offset_vector.y;
+        position.z += offset_vector.z;
+
         const float vector_norm = std::sqrt
         (
           std::pow(msg->vector.x, 2) +
@@ -145,10 +148,8 @@ namespace geometry_rviz_plugins::displays
         const float arrow_shaft_length = vector_norm - arrow_head_length;
 
         const QColor arrow_color = arrow_color_property_->getColor();
-        //arrow_color.a = color_alpha_property_->getFloat();
 
-        Ogre::Vector3 ogre_vector3;
-        ogre_vector3 = Ogre::Vector3
+        const Ogre::Vector3 ogre_vector3 = Ogre::Vector3
         (
             msg->vector.x,
             msg->vector.y,
@@ -199,13 +200,6 @@ namespace geometry_rviz_plugins::displays
     void Vector3StampedDisplay::destroyRenderingObjects()
     {
         rviz_arrow_.reset();
-    }
-
-    void Vector3StampedDisplay::destroyProperties()
-    {
-        shaft_radius_property_.reset();
-        head_radius_property_.reset();
-        head_scale_property_.reset();
     }
 }
 
