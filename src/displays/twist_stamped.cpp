@@ -286,7 +286,7 @@ namespace geometry_rviz_plugins::displays
         const float arrow_head_length = vector_norm * head_scale;
         const float arrow_shaft_length = vector_norm - arrow_head_length;
 
-        const auto ogre_vector3 = Ogre::Vector3
+        const Ogre::Vector3 ogre_vector3 = Ogre::Vector3
         (
             vector_msg.x,
             vector_msg.y,

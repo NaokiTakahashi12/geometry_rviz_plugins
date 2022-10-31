@@ -52,7 +52,6 @@ namespace geometry_rviz_plugins::displays
             )
         );
         shaft_radius_property_->setMin(0);
-        shaft_radius_property_->setMax(1);
 
         head_radius_property_.reset
         (
@@ -65,7 +64,6 @@ namespace geometry_rviz_plugins::displays
             )
         );
         head_radius_property_->setMin(0);
-        head_radius_property_->setMax(1);
 
         head_scale_property_.reset
         (
@@ -150,10 +148,8 @@ namespace geometry_rviz_plugins::displays
         const float arrow_shaft_length = vector_norm - arrow_head_length;
 
         const QColor arrow_color = arrow_color_property_->getColor();
-        //arrow_color.a = color_alpha_property_->getFloat();
 
-        Ogre::Vector3 ogre_vector3;
-        ogre_vector3 = Ogre::Vector3
+        const Ogre::Vector3 ogre_vector3 = Ogre::Vector3
         (
             msg->vector.x,
             msg->vector.y,
