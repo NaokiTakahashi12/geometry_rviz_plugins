@@ -48,7 +48,8 @@ namespace geometry_rviz_plugins::displays
                 "Shaft Radius",
                 default_shaft_radius_,
                 "Shaft radius of the vector.",
-                this
+                this,
+                SLOT(arrowPropertyCallback())
             )
         );
         shaft_radius_property_->setMin(0);
@@ -60,7 +61,8 @@ namespace geometry_rviz_plugins::displays
                 "Head Radius",
                 default_head_radius_,
                 "Head radius of the vector.",
-                this
+                this,
+                SLOT(arrowPropertyCallback())
             )
         );
         head_radius_property_->setMin(0);
@@ -72,7 +74,8 @@ namespace geometry_rviz_plugins::displays
                 "Head Scale",
                 default_head_scale_,
                 "Head length scale of the vector.",
-                this
+                this,
+                SLOT(arrowPropertyCallback())
             )
         );
         head_scale_property_->setMin(0);
@@ -85,7 +88,8 @@ namespace geometry_rviz_plugins::displays
                 "Offset the vector from the origin of the reference frame.",
                 Ogre::Vector3::ZERO,
                 "",
-                this
+                this,
+                SLOT(arrowPropertyCallback())
             )
         );
     }
@@ -96,6 +100,8 @@ namespace geometry_rviz_plugins::displays
         this->context_ = context;
         this->scene_manager_ = context->getSceneManager();
         this->scene_node_ = this->scene_manager_->getRootSceneNode()->createChildSceneNode();
+
+        updateArrowLocalProperties();
 
         initializeRvizArrow();
     }
@@ -109,6 +115,8 @@ namespace geometry_rviz_plugins::displays
     {
         destroyRenderingObjects();
 
+        updateArrowLocalProperties();
+
         initializeRvizArrow();
 
         MFDClass::reset();
@@ -116,10 +124,6 @@ namespace geometry_rviz_plugins::displays
 
     void Vector3StampedDisplay::processMessage(geometry_msgs::msg::Vector3Stamped::ConstSharedPtr msg)
     {
-        const float shaft_radius = shaft_radius_property_->getFloat(),
-                    head_radius = head_radius_property_->getFloat(),
-                    head_scale = head_scale_property_->getFloat();
-
         const Ogre::Vector3 offset_vector = position_offset_property_->getVector();
 
         Ogre::Vector3 position;
@@ -138,45 +142,26 @@ namespace geometry_rviz_plugins::displays
         position.y += offset_vector.y;
         position.z += offset_vector.z;
 
-        const float vector_norm = std::sqrt
+        converter::rvizArrowConverter
         (
-          std::pow(msg->vector.x, 2) +
-          std::pow(msg->vector.y, 2) +
-          std::pow(msg->vector.z, 2)
+            *rviz_arrow_,
+            msg->vector,
+            quaternion,
+            convert_arrow_properties_
         );
-        const float arrow_head_length = vector_norm * head_scale;
-        const float arrow_shaft_length = vector_norm - arrow_head_length;
+        rviz_arrow_->setPosition
+        (
+            position
+        );
 
         const QColor arrow_color = arrow_color_property_->getColor();
 
-        const Ogre::Vector3 ogre_vector3 = Ogre::Vector3
-        (
-            msg->vector.x,
-            msg->vector.y,
-            msg->vector.z
-        );
-
-        rviz_arrow_->set
-        (
-            arrow_shaft_length,
-            shaft_radius,
-            arrow_head_length,
-            head_radius
-        );
         rviz_arrow_->setColor
         (
             arrow_color.redF(),
             arrow_color.greenF(),
             arrow_color.blueF(),
             color_alpha_property_->getFloat()
-        );
-        rviz_arrow_->setPosition
-        (
-            position
-        );
-        rviz_arrow_->setDirection
-        (
-            quaternion * ogre_vector3
         );
 
         this->context_->queueRender();
@@ -187,6 +172,11 @@ namespace geometry_rviz_plugins::displays
         MFDClass::onInitialize();
     }
 
+    void Vector3StampedDisplay::arrowPropertyCallback()
+    {
+        updateArrowLocalProperties();
+    }
+
     void Vector3StampedDisplay::initializeRvizArrow()
     {
         rviz_arrow_ = std::make_unique<rviz_rendering::Arrow>
@@ -195,6 +185,14 @@ namespace geometry_rviz_plugins::displays
             this->scene_node_
         );
         rviz_arrow_->set(0, 0, 0, 0);
+    }
+
+    void Vector3StampedDisplay::updateArrowLocalProperties()
+    {
+        convert_arrow_properties_.arrow_scale = 1;
+        convert_arrow_properties_.head_scale = head_scale_property_->getFloat();
+        convert_arrow_properties_.head_radius = head_radius_property_->getFloat();
+        convert_arrow_properties_.shaft_radius = shaft_radius_property_->getFloat();
     }
 
     void Vector3StampedDisplay::destroyRenderingObjects()

@@ -13,6 +13,8 @@
 
 #include <geometry_msgs/msg/vector3_stamped.hpp>
 
+#include <geometry_rviz_plugins/converter/converter.hpp>
+
 
 namespace geometry_rviz_plugins::displays
 {
@@ -34,6 +36,7 @@ namespace geometry_rviz_plugins::displays
             void onInitialize() override;
 
         private Q_SLOTS:
+            void arrowPropertyCallback();
 
         private :
             const float default_color_alpha_,
@@ -52,7 +55,10 @@ namespace geometry_rviz_plugins::displays
 
             std::unique_ptr<rviz_rendering::Arrow> rviz_arrow_;
 
+            converter::ConvertArrowProperties convert_arrow_properties_;
+
             void initializeRvizArrow();
+            void updateArrowLocalProperties();
 
             void destroyRenderingObjects();
     };
