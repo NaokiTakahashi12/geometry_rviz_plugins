@@ -29,6 +29,7 @@ target_sources(geometry_rviz_plugins
         ${geometry_rviz_plugins_moc_files}
         src/displays/vector3_stamped.cpp
         src/displays/twist_stamped.cpp
+        src/converter/arrow_converter.cpp
 )
 target_include_directories(geometry_rviz_plugins
     PUBLIC
