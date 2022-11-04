@@ -45,7 +45,8 @@ namespace geometry_rviz_plugins::displays
                 "Linear Shaft Radius",
                 default_linear_shaft_radius_,
                 "Shaft radius of the linear arrow.",
-                this
+                this,
+                SLOT(linearPropertyCallback())
             )
         );
         linear_shaft_radius_property_->setMin(0);
@@ -57,7 +58,8 @@ namespace geometry_rviz_plugins::displays
                 "Linear Head Radius",
                 default_linear_head_radius_,
                 "Head radius of the linear arrow.",
-                this
+                this,
+                SLOT(linearPropertyCallback())
             )
         );
         linear_head_radius_property_->setMin(0);
@@ -69,7 +71,8 @@ namespace geometry_rviz_plugins::displays
                 "Linear Head Scale",
                 default_linear_head_scale_,
                 "Head length scale of the twist linear arrow.",
-                this
+                this,
+                SLOT(linearPropertyCallback())
             )
         );
         linear_head_scale_property_->setMin(0);
@@ -82,7 +85,8 @@ namespace geometry_rviz_plugins::displays
                 "Linear Arrow Scale",
                 default_linear_arrow_scale_,
                 "Arrow scale of the twist linear.",
-                this
+                this,
+                SLOT(linearPropertyCallback())
             )
         );
         linear_arrow_scale_property_->setMin(0);
@@ -117,7 +121,8 @@ namespace geometry_rviz_plugins::displays
                 "Angular Shaft Radius",
                 default_angular_shaft_radius_,
                 "Shaft radius of the angular arrow.",
-                this
+                this,
+                SLOT(angularPropertyCallback())
             )
         );
         angular_shaft_radius_property_->setMin(0);
@@ -129,7 +134,8 @@ namespace geometry_rviz_plugins::displays
                 "Angular Head Radius",
                 default_angular_head_radius_,
                 "Head radius of the angular arrow.",
-                this
+                this,
+                SLOT(angularPropertyCallback())
             )
         );
         angular_head_radius_property_->setMin(0);
@@ -141,7 +147,8 @@ namespace geometry_rviz_plugins::displays
                 "Angular Head Scale",
                 default_angular_head_scale_,
                 "Head length scale of the twist angular arrow.",
-                this
+                this,
+                SLOT(angularPropertyCallback())
             )
         );
         angular_head_scale_property_->setMin(0);
@@ -154,7 +161,8 @@ namespace geometry_rviz_plugins::displays
                 "Angular Arrow Scale",
                 default_angular_arrow_scale_,
                 "Arrow scale of the twist angular.",
-                this
+                this,
+                SLOT(angularPropertyCallback())
             )
         );
         angular_arrow_scale_property_->setMin(0);
@@ -167,6 +175,9 @@ namespace geometry_rviz_plugins::displays
         this->scene_manager_ = context->getSceneManager();
         this->scene_node_ = this->scene_manager_->getRootSceneNode()->createChildSceneNode();
 
+        updateLinearArrowLocalProperties();
+        updateAngularArrowLocalProperties();
+
         initializeRenderingObjects();
     }
 
@@ -178,6 +189,9 @@ namespace geometry_rviz_plugins::displays
     void TwistStampedDisplay::reset()
     {
         destroyRenderingObjects();
+
+        updateLinearArrowLocalProperties();
+        updateAngularArrowLocalProperties();
 
         initializeRenderingObjects();
 
@@ -213,6 +227,16 @@ namespace geometry_rviz_plugins::displays
         MFDClass::onInitialize();
     }
 
+    void TwistStampedDisplay::linearPropertyCallback()
+    {
+        updateLinearArrowLocalProperties();
+    }
+
+    void TwistStampedDisplay::angularPropertyCallback()
+    {
+        updateAngularArrowLocalProperties();
+    }
+
     void TwistStampedDisplay::updateTwistRendering
     (
         const geometry_msgs::msg::TwistStamped::ConstSharedPtr msg,
@@ -220,17 +244,14 @@ namespace geometry_rviz_plugins::displays
         const Ogre::Quaternion &ogre_quaternion
     )
     {
-        updateArrowObject
+        converter::rvizArrowConverter
         (
             *rviz_linear_arrow_,
             msg->twist.linear,
-            ogre_position,
             ogre_quaternion,
-            linear_arrow_scale_property_->getFloat(),
-            linear_head_scale_property_->getFloat(),
-            linear_head_radius_property_->getFloat(),
-            linear_shaft_radius_property_->getFloat()
+            linear_arrow_properties_
         );
+        rviz_linear_arrow_->setPosition(ogre_position);
 
         const QColor linear_arrow_color =  linear_color_property_->getColor();
 
@@ -242,17 +263,13 @@ namespace geometry_rviz_plugins::displays
             linear_color_alpha_property_->getFloat()
         );
 
-        updateArrowObject
-        (
+        converter::rvizArrowConverter(
             *rviz_angular_arrow_,
             msg->twist.angular,
-            ogre_position,
             ogre_quaternion,
-            angular_arrow_scale_property_->getFloat(),
-            angular_head_scale_property_->getFloat(),
-            angular_head_radius_property_->getFloat(),
-            angular_shaft_radius_property_->getFloat()
+            angular_arrow_properties_
         );
+        rviz_angular_arrow_->setPosition(ogre_position);
 
         const QColor angular_arrow_color = angular_color_property_->getColor();
 
@@ -265,49 +282,20 @@ namespace geometry_rviz_plugins::displays
         );
     }
 
-    void TwistStampedDisplay::updateArrowObject
-    (
-        rviz_rendering::Arrow &arrow_object,
-        const geometry_msgs::msg::Vector3 &vector_msg,
-        const Ogre::Vector3 &ogre_position,
-        const Ogre::Quaternion &ogre_quaternion,
-        const float arrow_scale,
-        const float head_scale,
-        const float head_radius,
-        const float shaft_radius
-    )
+    void TwistStampedDisplay::updateLinearArrowLocalProperties()
     {
-        const float vector_norm = arrow_scale * std::sqrt
-        (
-            std::pow(vector_msg.x, 2) +
-            std::pow(vector_msg.y, 2) +
-            std::pow(vector_msg.z, 2)
-        );
-        const float arrow_head_length = vector_norm * head_scale;
-        const float arrow_shaft_length = vector_norm - arrow_head_length;
+        linear_arrow_properties_.arrow_scale = linear_arrow_scale_property_->getFloat();
+        linear_arrow_properties_.head_scale = linear_head_scale_property_->getFloat();
+        linear_arrow_properties_.head_radius = linear_head_radius_property_->getFloat();
+        linear_arrow_properties_.shaft_radius = linear_shaft_radius_property_->getFloat();
+    }
 
-        const Ogre::Vector3 ogre_vector3 = Ogre::Vector3
-        (
-            vector_msg.x,
-            vector_msg.y,
-            vector_msg.z
-        );
-
-        arrow_object.set
-        (
-            arrow_shaft_length,
-            shaft_radius,
-            arrow_head_length,
-            head_radius
-        );
-        arrow_object.setPosition
-        (
-            ogre_position
-        );
-        arrow_object.setDirection
-        (
-            ogre_quaternion * ogre_vector3
-        );
+    void TwistStampedDisplay::updateAngularArrowLocalProperties()
+    {
+        angular_arrow_properties_.arrow_scale = angular_arrow_scale_property_->getFloat();
+        angular_arrow_properties_.head_scale = angular_head_scale_property_->getFloat();
+        angular_arrow_properties_.head_radius = angular_head_radius_property_->getFloat();
+        angular_arrow_properties_.shaft_radius = angular_shaft_radius_property_->getFloat();
     }
 
     void TwistStampedDisplay::initializeRenderingObjects()
