@@ -14,6 +14,8 @@
 #include <geometry_msgs/msg/vector3_stamped.hpp>
 #include <geometry_msgs/msg/twist_stamped.hpp>
 
+#include <geometry_rviz_plugins/converter/converter.hpp>
+
 
 namespace geometry_rviz_plugins::displays
 {
@@ -34,6 +36,10 @@ namespace geometry_rviz_plugins::displays
         protected :
             void onInitialize() override;
 
+        private Q_SLOTS :
+            void linearPropertyCallback();
+            void angularPropertyCallback();
+
         private :
             const float default_linear_color_alpha_,
                         default_linear_shaft_radius_,
@@ -46,6 +52,9 @@ namespace geometry_rviz_plugins::displays
                         default_angular_head_radius_,
                         default_angular_head_scale_,
                         default_angular_arrow_scale_;
+
+            converter::ConvertArrowProperties linear_arrow_properties_,
+                                              angular_arrow_properties_;
 
             std::unique_ptr<rviz_common::properties::ColorProperty> linear_color_property_;
             std::unique_ptr<rviz_common::properties::FloatProperty> linear_color_alpha_property_,
@@ -71,21 +80,9 @@ namespace geometry_rviz_plugins::displays
                 const Ogre::Quaternion &ogre_quaternion
             );
 
-            //  TODO
-            void updateArrowObject
-            (
-                rviz_rendering::Arrow &,
-                const geometry_msgs::msg::Vector3 &,
-                const Ogre::Vector3 &ogre_position,
-                const Ogre::Quaternion &ogre_quaternion,
-                const float arrow_scale,
-                const float head_scale,
-                const float head_radius,
-                const float shaft_radius
-            );
-
+            void updateLinearArrowLocalProperties();
+            void updateAngularArrowLocalProperties();
             void initializeRenderingObjects();
-
             void destroyRenderingObjects();
     };
 }
