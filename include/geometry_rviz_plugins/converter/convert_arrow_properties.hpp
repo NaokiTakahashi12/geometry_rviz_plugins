@@ -18,15 +18,18 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#pragma once
+#ifndef GEOMETRY_RVIZ_PLUGINS__CONVERTER__CONVERT_ARROW_PROPERTIES_HPP_
+#define GEOMETRY_RVIZ_PLUGINS__CONVERTER__CONVERT_ARROW_PROPERTIES_HPP_
+
 
 namespace geometry_rviz_plugins::converter
 {
-    struct ConvertArrowProperties
-    {
-        float arrow_scale,
-              head_scale,
-              head_radius,
-              shaft_radius;
-    };
-}
+struct ConvertArrowProperties
+{
+  float arrow_scale,
+    head_scale,
+    head_radius,
+    shaft_radius;
+};
+}  // namespace geometry_rviz_plugins::converter
+#endif  // GEOMETRY_RVIZ_PLUGINS__CONVERTER__CONVERT_ARROW_PROPERTIES_HPP_

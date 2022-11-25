@@ -18,7 +18,8 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-#pragma once
+#ifndef  GEOMETRY_RVIZ_PLUGINS__CONVERTER__ARROW_CONVERTER_HPP_
+#define GEOMETRY_RVIZ_PLUGINS__CONVERTER__ARROW_CONVERTER_HPP_
 
 #include <rviz_rendering/objects/arrow.hpp>
 
@@ -26,13 +27,14 @@
 
 #include "convert_arrow_properties.hpp"
 
+
 namespace geometry_rviz_plugins::converter
 {
-    void rvizArrowConverter
-    (
-        rviz_rendering::Arrow &,
-        const geometry_msgs::msg::Vector3 &,
-        const Ogre::Quaternion &,
-        const ConvertArrowProperties &
-    );
-}
+void rvizArrowConverter(
+  rviz_rendering::Arrow &,
+  const geometry_msgs::msg::Vector3 &,
+  const Ogre::Quaternion &,
+  const ConvertArrowProperties &
+);
+}  // namespace geometry_rviz_plugins::converter
+#endif  // GEOMETRY_RVIZ_PLUGINS__CONVERTER__ARROW_CONVERTER_HPP_
