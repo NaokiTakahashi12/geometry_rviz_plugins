@@ -21,6 +21,8 @@
 #ifndef GEOMETRY_RVIZ_PLUGINS__DISPLAYS__VECTOR3_STAMPED_HPP_
 #define GEOMETRY_RVIZ_PLUGINS__DISPLAYS__VECTOR3_STAMPED_HPP_
 
+#include <memory>
+
 #include <rviz_common/message_filter_display.hpp>
 
 #include <rviz_common/properties/float_property.hpp>
@@ -32,8 +34,6 @@
 #include <geometry_msgs/msg/vector3_stamped.hpp>
 
 #include <geometry_rviz_plugins/converter/converter.hpp>
-
-#include <memory>
 
 
 namespace geometry_rviz_plugins::displays
