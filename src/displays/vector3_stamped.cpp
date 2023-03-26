@@ -20,13 +20,13 @@
 
 #include <geometry_rviz_plugins/displays/vector3_stamped.hpp>
 
-#include <rviz_common/msg_conversions.hpp>
-#include <pluginlib/class_list_macros.hpp>
-
 #include <cmath>
 
 #include <memory>
 #include <chrono>
+
+#include <rviz_common/msg_conversions.hpp>
+#include <pluginlib/class_list_macros.hpp>
 
 
 namespace geometry_rviz_plugins::displays

@@ -20,9 +20,9 @@
 
 #include <geometry_rviz_plugins/displays/twist_stamped.hpp>
 
-#include <pluginlib/class_list_macros.hpp>
-
 #include <memory>
+
+#include <pluginlib/class_list_macros.hpp>
 
 
 namespace geometry_rviz_plugins::displays
